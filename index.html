@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="assets/package.svg" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowShip</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-container">
+      <div class="login-logo">FlowShip</div>
+      <p class="login-subtitle">Sistema de Gestão de Logística</p>
+
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" value="admin@admin.com" required>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="loginPassword" value="123456" required>
+        </div>
+        <button type="submit" class="login-btn">Entrar</button>
+        <p>Não tem conta? <span class="toggle-form" onclick="showRegisterForm()">Cadastre-se</span></p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="hidden">
+        <div class="form-group">
+          <label>Nome Completo</label>
+          <input type="text" id="registerName" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="registerEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="registerPassword" required>
+        </div>
+        <div class="form-group">
+          <label>Confirmar Senha</label>
+          <input type="password" id="confirmPassword" required>
+        </div>
+        <button type="submit" class="register-btn">Cadastrar</button>
+        <p>Já tem conta? <span class="toggle-form" onclick="showLoginForm()">Faça login</span></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">FlowShip</div>
+      <div class="logo-subtitle">Sistema de Gestão</div>
+    </div>
+    <div class="nav-menu">
+      <div class="nav-item">
+        <div class="nav-link active" onclick="showSection('dashboard')">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-link" onclick="showSection('mercadolivre')">
+          <i class="fas fa-store"></i>
+          Mercado Livre
+        </div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-link" onclick="showSection('fornecedores')">
+          <i class="fas fa-truck"></i>
+          Fornecedores
+        </div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-link" onclick="showSection('produtos')">
+          <i class="fas fa-box"></i>
+          Produtos
+        </div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-link" onclick="showSection('clientes')">
+          <i class="fas fa-users"></i>
+          Clientes
+        </div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-link" onclick="showSection('configuracoes')">
+          <i class="fas fa-cog"></i>
+          Configurações
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1 id="pageTitle">Dashboard Principal</h1>
+      <div class="user-profile">
+        <span id="userName">Bem-vindo, Admin</span>
+        <div class="user-avatar" id="userAvatar">A</div>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Dashboard Section -->
+    <section class="content-section active" id="dashboard">
+      <div class="welcome-section">
+        <h2 class="welcome-title">Bem-vindo ao Sistema de Gestão de Logística</h2>
+        <p class="welcome-subtitle">Gerencie suas operações de forma eficiente e automatizada</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+          </div>
+          <div class="stat-value" id="supplierCount">24</div>
+          <div class="stat-label">Fornecedores Ativos</div>
+          <div class="stat-trend trend-positive">
+            <i class="fas fa-arrow-up"></i>
+            +3 esta semana
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-sync-alt"></i>
+            </div>
+          </div>
+          <div class="stat-value" id="syncCount">156</div>
+          <div class="stat-label">Itens Sincronizados Hoje</div>
+          <div class="stat-trend trend-positive">
+            <i class="fas fa-check-circle"></i>
+            <span id="lastSync">Última sync: 14:32</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+          </div>
+          <div class="stat-value" id="newUsers">8</div>
+          <div class="stat-label">Novos Cadastros</div>
+          <div class="stat-trend trend-neutral">
+            <i class="fas fa-calendar"></i>
+            Esta semana
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+          <div class="stat-value">98%</div>
+          <div class="stat-label">Taxa de Sucesso API</div>
+          <div class="stat-trend trend-positive">
+            <i class="fas fa-arrow-up"></i>
+            Sistema estável
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mercado Livre Section -->
+    <section class="content-section" id="mercadolivre">
+      <div class="content-card">
+        <h2 class="card-title">
+          <i class="fas fa-store"></i>
+          Integração Mercado Livre
+        </h2>
+
+        <div class="api-status" id="apiStatus">
+          <i class="fas fa-check-circle"></i>
+          <span>API conectada e funcionando</span>
+          <button class="sync-button" onclick="syncMercadoLivre()" id="syncBtn">
+            <i class="fas fa-sync-alt"></i> Sincronizar Agora
+          </button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Token de Acesso</label>
+            <input type="password" id="mlToken" placeholder="Insira seu token do Mercado Livre">
+          </div>
+          <div class="form-group">
+            <label>User ID</label>
+            <input type="text" id="mlUserId" placeholder="ID do usuário">
+          </div>
+        </div>
+
+        <button class="btn" onclick="saveMLConfig()">Salvar Configuração</button>
+
+        <div class="table-container" style="margin-top: 2rem;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>SKU</th>
+                <th>Status ML</th>
+                <th>Última Sync</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="mlProductsTable">
+              <tr>
+                <td>Smartphone XYZ</td>
+                <td>SM001</td>
+                <td><span class="status-badge status-active">Ativo</span></td>
+                <td>14:32 hoje</td>
+                <td>
+                  <button class="btn" onclick="syncProduct('SM001')">Sync</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Notebook ABC</td>
+                <td>NB002</td>
+                <td><span class="status-badge status-pending">Pendente</span></td>
+                <td>13:45 hoje</td>
+                <td>
+                  <button class="btn" onclick="syncProduct('NB002')">Sync</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fornecedores Section -->
+    <section class="content-section" id="fornecedores">
+      <div class="content-card">
+        <h2 class="card-title">
+          <i class="fas fa-truck"></i>
+          Gestão de Fornecedores
+        </h2>
+
+        <button class="btn" onclick="showSupplierForm()" style="margin-bottom: 2rem;">
+          <i class="fas fa-plus"></i> Novo Fornecedor
+        </button>
+
+        <!-- Supplier Form -->
+        <div id="supplierForm" class="hidden"
+          style="margin-bottom: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px;">
+          <h3>Cadastrar Novo Fornecedor</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome da Empresa</label>
+              <input type="text" id="supplierName" required>
+            </div>
+            <div class="form-group">
+              <label>CNPJ</label>
+              <input type="text" id="supplierCNPJ" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="supplierEmail" required>
+            </div>
+            <div class="form-group">
+              <label>Telefone</label>
+              <input type="tel" id="supplierPhone" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Endereço</label>
+              <textarea id="supplierAddress" placeholder="Endereço completo"></textarea>
+            </div>
+          </div>
+          <button class="btn" onclick="saveSupplier()">Salvar Fornecedor</button>
+          <button class="btn" onclick="hideSupplierForm()" style="background: #6b7280;">Cancelar</button>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CNPJ</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="suppliersTable">
+              <tr>
+                <td>Fornecedor ABC Ltda</td>
+                <td>12.345.678/0001-90</td>
+                <td>contato@abc.com</td>
+                <td><span class="status-badge status-active">Ativo</span></td>
+                <td>
+                  <button class="btn" onclick="editSupplier(1)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteSupplier(1)">Excluir</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Distribuidora XYZ S.A.</td>
+                <td>98.765.432/0001-10</td>
+                <td>vendas@xyz.com</td>
+                <td><span class="status-badge status-active">Ativo</span></td>
+                <td>
+                  <button class="btn" onclick="editSupplier(2)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteSupplier(2)">Excluir</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Tech Solutions Corp</td>
+                <td>11.222.333/0001-44</td>
+                <td>info@techsolutions.com</td>
+                <td><span class="status-badge status-inactive">Inativo</span></td>
+                <td>
+                  <button class="btn" onclick="editSupplier(3)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteSupplier(3)">Excluir</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Produtos Section -->
+    <section class="content-section" id="produtos">
+      <div class="content-card">
+        <h2 class="card-title">
+          <i class="fas fa-box"></i>
+          Gestão de Produtos
+        </h2>
+
+        <button class="btn" onclick="showProductForm()" style="margin-bottom: 2rem;">
+          <i class="fas fa-plus"></i> Novo Produto
+        </button>
+
+        <!-- Product Form -->
+        <div id="productForm" class="hidden"
+          style="margin-bottom: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px;">
+          <h3>Cadastrar Novo Produto</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome do Produto</label>
+              <input type="text" id="productName" required>
+            </div>
+            <div class="form-group">
+              <label>SKU</label>
+              <input type="text" id="productSKU" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Categoria</label>
+              <select id="productCategory" required>
+                <option value="">Selecione uma categoria</option>
+                <option value="eletrônicos">Eletrônicos</option>
+                <option value="roupas">Roupas</option>
+                <option value="casa">Casa e Decoração</option>
+                <option value="esportes">Esportes</option>
+                <option value="livros">Livros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Preço (R$)</label>
+              <input type="number" id="productPrice" step="0.01" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Estoque</label>
+              <input type="number" id="productStock" required>
+            </div>
+            <div class="form-group">
+              <label>Fornecedor</label>
+              <select id="productSupplier" required>
+                <option value="">Selecione um fornecedor</option>
+                <option value="1">Fornecedor ABC Ltda</option>
+                <option value="2">Distribuidora XYZ S.A.</option>
+                <option value="3">Tech Solutions Corp</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Descrição</label>
+              <textarea id="productDescription" placeholder="Descrição detalhada do produto"></textarea>
+            </div>
+          </div>
+          <button class="btn" onclick="saveProduct()">Salvar Produto</button>
+          <button class="btn" onclick="hideProductForm()" style="background: #6b7280;">Cancelar</button>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>SKU</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="productsTable">
+              <tr>
+                <td>Smartphone Galaxy S23</td>
+                <td>SM001</td>
+                <td>Eletrônicos</td>
+                <td>R$ 2.499,00</td>
+                <td>45</td>
+                <td><span class="status-badge status-active">Disponível</span></td>
+                <td>
+                  <button class="btn" onclick="editProduct(1)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteProduct(1)">Excluir</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Notebook Dell Inspiron</td>
+                <td>NB002</td>
+                <td>Eletrônicos</td>
+                <td>R$ 3.299,00</td>
+                <td>12</td>
+                <td><span class="status-badge status-active">Disponível</span></td>
+                <td>
+                  <button class="btn" onclick="editProduct(2)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteProduct(2)">Excluir</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Tênis Nike Air Max</td>
+                <td>TN003</td>
+                <td>Esportes</td>
+                <td>R$ 399,00</td>
+                <td>0</td>
+                <td><span class="status-badge status-inactive">Esgotado</span></td>
+                <td>
+                  <button class="btn" onclick="editProduct(3)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteProduct(3)">Excluir</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clientes Section -->
+    <section class="content-section" id="clientes">
+      <div class="content-card">
+        <h2 class="card-title">
+          <i class="fas fa-users"></i>
+          Gestão de Clientes
+        </h2>
+
+        <button class="btn" onclick="showClientForm()" style="margin-bottom: 2rem;">
+          <i class="fas fa-plus"></i> Novo Cliente
+        </button>
+
+        <!-- Client Form -->
+        <div id="clientForm" class="hidden"
+          style="margin-bottom: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px;">
+          <h3>Cadastrar Novo Cliente</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome Completo</label>
+              <input type="text" id="clientName" required>
+            </div>
+            <div class="form-group">
+              <label>CPF/CNPJ</label>
+              <input type="text" id="clientDocument" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="clientEmail" required>
+            </div>
+            <div class="form-group">
+              <label>Telefone</label>
+              <input type="tel" id="clientPhone" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Endereço</label>
+              <textarea id="clientAddress" placeholder="Endereço completo"></textarea>
+            </div>
+          </div>
+          <button class="btn" onclick="saveClient()">Salvar Cliente</button>
+          <button class="btn" onclick="hideClientForm()" style="background: #6b7280;">Cancelar</button>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CPF/CNPJ</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Data Cadastro</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTable">
+              <tr>
+                <td>João Silva Santos</td>
+                <td>123.456.789-00</td>
+                <td>joao@email.com</td>
+                <td>(11) 99999-9999</td>
+                <td>15/11/2024</td>
+                <td><span class="status-badge status-active">Ativo</span></td>
+                <td>
+                  <button class="btn" onclick="editClient(1)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteClient(1)">Excluir</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Maria Oliveira</td>
+                <td>987.654.321-00</td>
+                <td>maria@email.com</td>
+                <td>(11) 88888-8888</td>
+                <td>20/11/2024</td>
+                <td><span class="status-badge status-active">Ativo</span></td>
+                <td>
+                  <button class="btn" onclick="editClient(2)">Editar</button>
+                  <button class="btn btn-danger" onclick="deleteClient(2)">Excluir</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Configurações Section -->
+    <section class="content-section" id="configuracoes">
+      <div class="content-card">
+        <h2 class="card-title">
+          <i class="fas fa-cog"></i>
+          Configurações do Sistema
+        </h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome da Empresa</label>
+            <input type="text" id="companyName" value="AdminPro Solutions">
+          </div>
+          <div class="form-group">
+            <label>Email Principal</label>
+            <input type="email" id="companyEmail" value="admin@adminpro.com">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tema do Sistema</label>
+            <select id="systemTheme">
+              <option value="default">Padrão (Azul)</option>
+              <option value="dark">Escuro</option>
+              <option value="light">Claro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Idioma</label>
+            <select id="systemLanguage">
+              <option value="pt-BR">Português (Brasil)</option>
+              <option value="en-US">English (US)</option>
+              <option value="es-ES">Español</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Backup Automático</label>
+            <select id="autoBackup">
+              <option value="daily">Diário</option>
+              <option value="weekly">Semanal</option>
+              <option value="monthly">Mensal</option>
+              <option value="disabled">Desabilitado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Notificações por Email</label>
+            <select id="emailNotifications">
+              <option value="all">Todas</option>
+              <option value="important">Apenas importantes</option>
+              <option value="none">Nenhuma</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn" onclick="saveSettings()">Salvar Configurações</button>
+        <button class="btn btn-danger" onclick="resetSettings()">Restaurar Padrões</button>
+      </div>
+
+      <div class="content-card">
+        <h3 class="card-title">
+          <i class="fas fa-download"></i>
+          Backup e Exportação
+        </h3>
+
+        <div style="margin-bottom: 2rem;">
+          <p>Faça backup dos seus dados ou exporte relatórios:</p>
+        </div>
+
+        <button class="btn" onclick="exportData('suppliers')">
+          <i class="fas fa-file-export"></i> Exportar Fornecedores
+        </button>
+        <button class="btn" onclick="exportData('products')">
+          <i class="fas fa-file-export"></i> Exportar Produtos
+        </button>
+        <button class="btn" onclick="exportData('clients')">
+          <i class="fas fa-file-export"></i> Exportar Clientes
+        </button>
+        <button class="btn btn-success" onclick="createFullBackup()">
+          <i class="fas fa-database"></i> Backup Completo
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal for confirmations -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3 id="modalTitle">Confirmar Ação</h3>
+      <p id="modalMessage">Tem certeza que deseja continuar?</p>
+      <div style="margin-top: 1rem;">
+        <button class="btn btn-danger" id="confirmBtn">Confirmar</button>
+        <button class="btn" onclick="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
